@@ -32,6 +32,10 @@ func SetConn() *sql.DB {
 	return dat
 }
 
+func TestOpenConn(t *testing.T) {
+	Open()
+}
+
 func TestInsertDatabases(t *testing.T) {
 	db := SetConn()
 	defer db.Close()
@@ -48,6 +52,31 @@ func TestInsertDatabases(t *testing.T) {
 	fmt.Println("Success insert new customer")
 }
 
-func TestOpenConn(t *testing.T) {
-	Open()
+func TestQuerySQL(t *testing.T) {
+	db := SetConn()  //initiate connection
+	defer db.Close() //close connection at last execution function
+
+	ctx := context.Background() //initiate background context
+
+	perintah := "SELECT id, name FROM customer"
+	rows, err := db.QueryContext(ctx, perintah)
+	if err != nil {
+		panic(err)
+	}
+
+	//to retrive data from databases
+	for rows.Next() {
+		var id, name string
+		err := rows.Scan(&id, &name)
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println("ID :", id)
+		fmt.Println("Name :", name)
+	}
+
+	fmt.Println("Succes execute query table")
+
+	defer rows.Close()
 }
