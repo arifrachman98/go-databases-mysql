@@ -20,6 +20,15 @@ func Open() *sql.DB {
 
 }
 
+func OpenConn() *sql.DB {
+	db, err := sql.Open("mysql", "root:@tcp(localhost:3306)/godb")
+	if err != nil {
+		panic(err)
+	}
+
+	return db
+}
+
 func SetConn() *sql.DB {
 
 	dat := Open()
