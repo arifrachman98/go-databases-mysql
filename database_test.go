@@ -10,26 +10,26 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func Open() {
+func Open() *sql.DB {
 	db, err := sql.Open("mysql", "root:@tcp(localhost:3306)/go-databases")
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
+
+	return db
+
 }
 
 func SetConn() *sql.DB {
-	db, err := sql.Open("mysql", "root:@tcp(localhost:3306)/go-databases")
-	if err != nil {
-		panic(err)
-	}
 
-	db.SetMaxIdleConns(10)
-	db.SetMaxOpenConns(100)
-	db.SetConnMaxIdleTime(5 * time.Minute)
-	db.SetConnMaxLifetime(60 * time.Minute)
+	dat := Open()
 
-	return db
+	dat.SetMaxIdleConns(10)
+	dat.SetMaxOpenConns(100)
+	dat.SetConnMaxIdleTime(5 * time.Minute)
+	dat.SetConnMaxLifetime(60 * time.Minute)
+
+	return dat
 }
 
 func TestInsertDatabases(t *testing.T) {
@@ -38,7 +38,7 @@ func TestInsertDatabases(t *testing.T) {
 
 	ctx := context.Background()
 
-	masuk := "INSERT INTO customer(id, name) VALUES('1','Arif')"
+	masuk := "INSERT INTO customer(id, name) VALUES('2','Jajang')"
 
 	_, err := db.ExecContext(ctx, masuk)
 	if err != nil {
