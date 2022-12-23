@@ -1,7 +1,9 @@
 package godatabases
 
 import (
+	"context"
 	"database/sql"
+	"fmt"
 	"testing"
 	"time"
 
@@ -30,8 +32,20 @@ func SetConn() *sql.DB {
 	return db
 }
 
-func TestDatabases(t *testing.T) {
+func TestInsertDatabases(t *testing.T) {
+	db := SetConn()
+	defer db.Close()
 
+	ctx := context.Background()
+
+	masuk := "INSERT INTO customer(id, name) VALUES('1','Arif')"
+
+	_, err := db.ExecContext(ctx, masuk)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Success insert new customer")
 }
 
 func TestOpenConn(t *testing.T) {
