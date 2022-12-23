@@ -178,16 +178,15 @@ func TestSQLInjection(t *testing.T) {
 }
 
 func TestSQLInjectionSec(t *testing.T) {
-	db := SetConn()
+	db := SetConnect()
 	defer db.Close()
 	ctx := context.Background()
 
-	uname := "admin"
-	passw := "admin"
+	uname := "admin';#"
+	passw := "salah"
 
-	perintah := "SELECT username FROM user WHERE username = '" + uname + "' AND password = '" + passw + "' LIMIT 1"
-
-	rows, err := db.QueryContext(ctx, perintah)
+	perintah := "SELECT username FROM user WHERE username = ? AND password = ? LIMIT 1"
+	rows, err := db.QueryContext(ctx, perintah, uname, passw)
 	if err != nil {
 		panic(err)
 	}
