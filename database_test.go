@@ -176,3 +176,32 @@ func TestSQLInjection(t *testing.T) {
 		fmt.Println("Gagal Login")
 	}
 }
+
+func TestSQLInjectionSec(t *testing.T) {
+	db := SetConn()
+	defer db.Close()
+	ctx := context.Background()
+
+	uname := "admin"
+	passw := "admin"
+
+	perintah := "SELECT username FROM user WHERE username = '" + uname + "' AND password = '" + passw + "' LIMIT 1"
+
+	rows, err := db.QueryContext(ctx, perintah)
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+		var uname string
+
+		err := rows.Scan(&uname)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("Sukses Login, Welcome", uname)
+	} else {
+		fmt.Println("Gagal Login")
+	}
+}
