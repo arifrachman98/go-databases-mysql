@@ -10,6 +10,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+//DB go-databases
 func Open() *sql.DB {
 	db, err := sql.Open("mysql", "root:@tcp(localhost:3306)/go-databases")
 	if err != nil {
@@ -20,6 +21,7 @@ func Open() *sql.DB {
 
 }
 
+//DB godb
 func OpenConn() *sql.DB {
 	db, err := sql.Open("mysql", "root:@tcp(localhost:3306)/godb?parseTime=true")
 	if err != nil {
@@ -29,6 +31,7 @@ func OpenConn() *sql.DB {
 	return db
 }
 
+//DB go-databases
 func SetConn() *sql.DB {
 
 	dat := Open()
@@ -41,6 +44,7 @@ func SetConn() *sql.DB {
 	return dat
 }
 
+//DB godb
 func SetConnect() *sql.DB {
 
 	dat := OpenConn()
@@ -53,10 +57,17 @@ func SetConnect() *sql.DB {
 	return dat
 }
 
+//DB go-databases/customer
 func TestOpenConn(t *testing.T) {
 	Open()
 }
 
+//DB godb/pelanggan
+func TestOpenConnSec(t *testing.T) {
+	OpenConn()
+}
+
+//DB go-databases/customer
 func TestInsertDatabases(t *testing.T) {
 	db := SetConn()
 	defer db.Close()
@@ -73,6 +84,23 @@ func TestInsertDatabases(t *testing.T) {
 	fmt.Println("Success insert new customer")
 }
 
+//DB godb/pelanggan
+func TestInsertDataSec(t *testing.T) {
+	db := OpenConn()
+	defer db.Close()
+
+	ctx := context.Background()
+	masuk := "INSERT INTO pelanggan(id,name) VALUES(1,'Dadang')"
+
+	_, err := db.ExecContext(ctx, masuk)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Success insert new pelanggan")
+}
+
+//DB go-databases/customer
 func TestQuerySQL(t *testing.T) {
 	db := SetConn()  //initiate connection
 	defer db.Close() //close connection at last execution function
@@ -102,6 +130,7 @@ func TestQuerySQL(t *testing.T) {
 	defer rows.Close()
 }
 
+//DB godb/pelanggan
 func TestQuerySQLComplex(t *testing.T) {
 	db := SetConnect()
 	defer db.Close()
@@ -148,6 +177,7 @@ func TestQuerySQLComplex(t *testing.T) {
 	defer rows.Close()
 }
 
+//DB godb/user
 func TestSQLInjection(t *testing.T) {
 	db := SetConnect()
 	defer db.Close()
@@ -177,6 +207,7 @@ func TestSQLInjection(t *testing.T) {
 	}
 }
 
+//DB godb/user
 func TestSQLInjectionSec(t *testing.T) {
 	db := SetConnect()
 	defer db.Close()
@@ -203,4 +234,23 @@ func TestSQLInjectionSec(t *testing.T) {
 	} else {
 		fmt.Println("Gagal Login")
 	}
+}
+
+//DB godb/user
+func TestExecSQLParameter(t *testing.T) {
+	db := SetConnect()
+	defer db.Close()
+
+	ctx := context.Background()
+
+	username := "arif'; DROP TABLE user; #"
+	password := "password"
+
+	perintah := "INSERT INTO user(username, password) VALUES(?, ?)" //with VALUE (?, ?) method will reject sql INJECTION
+	_, err := db.ExecContext(ctx, perintah, username, password)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Success insert new user")
 }
