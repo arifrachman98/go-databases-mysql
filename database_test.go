@@ -298,19 +298,19 @@ func TestPrepareStatement(t *testing.T) {
 	}
 	defer statement.Close()
 
-		for i := 1; i<= 10;i++{
-			email := "arifrach"+ strconv.Itoa(i)+"@gmail.com"
-			comment := "Komentar ke-"+ strconv.Itoa(i)+" Test"
+	for i := 1; i <= 10; i++ {
+		email := "arifrach" + strconv.Itoa(i) + "@gmail.com"
+		comment := "Komentar ke-" + strconv.Itoa(i) + " Test"
 
-			result, err := statement.ExecContext(ctx, email, comment)
-			if err != nil {
-				panic(err)
-			}
-				id, err := result.LastInsertId()
-				if err != nil {
-					panic(err)
-				}
-
-				fmt.Println("Comment id :",id)
+		result, err := statement.ExecContext(ctx, email, comment)
+		if err != nil {
+			panic(err)
 		}
+		id, err := result.LastInsertId()
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println("Comment id :", id)
+	}
 }
