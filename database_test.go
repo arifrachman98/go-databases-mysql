@@ -254,3 +254,31 @@ func TestExecSQLParameter(t *testing.T) {
 
 	fmt.Println("Success insert new user")
 }
+
+//DB godb/comments
+func TestAutoIncrementData(t *testing.T) {
+	db := SetConnect()
+	defer db.Close()
+
+	ctx := context.Background()
+
+	email := "arif@gmail.com"
+	comment := "Test Comment"
+
+	for i := 1; i <= 10; i++ {
+		perintah := "INSERT INTO comments(email, comment) VALUES(?, ?)"
+		result, err := db.ExecContext(ctx, perintah, email, comment)
+		if err != nil {
+			panic(err)
+		}
+
+		dat, err := result.LastInsertId()
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println("Success insert new comment with id", dat)
+		fmt.Println("=======================================")
+	}
+
+}
