@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	
+	gdb "go-databases-mysql"
 	"github.com/arifrachman98/go-databases-mysql/entity"
 	_ "github.com/go-sql-driver/mysql"
 )
