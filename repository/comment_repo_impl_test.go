@@ -2,16 +2,26 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"testing"
 
-	gdb "go-databases-mysql"
 	"github.com/arifrachman98/go-databases-mysql/entity"
 	_ "github.com/go-sql-driver/mysql"
 )
 
+func open() *sql.DB {
+	db, err := sql.Open("mysql", "root:@tcp(localhost:3306)/godb")
+	if err != nil {
+		panic(err)
+	}
+
+	return db
+}
+
 func TestCommentInsert(t *testing.T) {
-	comentRepo := NewCommentRepo(gdb.SetConnect())
+
+	comentRepo := NewCommentRepo(open())
 
 	ctx := context.Background()
 	comment := entity.Comment{
